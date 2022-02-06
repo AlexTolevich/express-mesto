@@ -18,4 +18,13 @@ app.listen(PORT, () => {
 
 app.use(bodyParser.json()); // для собирания JSON-формата
 app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: '62000aecebeadd288ab6f905',
+  };
+  next();
+});
+
 app.use('/users', require('./routes/users'));
+app.use('/cards', require('./routes/cards'));
