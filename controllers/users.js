@@ -25,7 +25,26 @@ const getUser = (req, res) => {
 };
 
 const getUsers = (req, res) => {
-  User.find(req.params.id)
+  User.find({})
+    .then((user) => res.send({ data: user }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+};
+
+const setUser = (req, res) => {
+  const {
+    name,
+    about,
+  } = req.body;
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+    .then((user) => res.send({ data: user }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+};
+
+const setAvatar = (req, res) => {
+  const {
+    avatar,
+  } = req.body;
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
     .then((user) => res.send({ data: user }))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
@@ -34,4 +53,6 @@ module.exports = {
   createUser,
   getUser,
   getUsers,
+  setUser,
+  setAvatar,
 };
