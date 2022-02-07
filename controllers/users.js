@@ -27,7 +27,7 @@ const getUser = (req, res) => {
 const getUsers = (req, res) => {
   User.find(req.params.id)
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({message: 'Произошла ошибка'}));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports = {
