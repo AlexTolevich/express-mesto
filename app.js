@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const { PORT = 3000 } = process.env;
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
+const { NOT_FOUND } = require('./utils/errors');
 
 const app = express();
 // app.use(express.static(path.join(__dirname, 'public')));
@@ -32,3 +33,6 @@ app.use((req, res, next) => {
 
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
+app.use((req, res) => {
+  res.status(NOT_FOUND).send({ message: 'Ресурс не существует' });
+});
