@@ -1,10 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+// const path = require('path');
 const bodyParser = require('body-parser');
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
+const usersRoutes = require('./routes/users');
+const cardsRoutes = require('./routes/cards');
 
 const app = express();
+// app.use(express.static(path.join(__dirname, 'public')));
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -21,10 +25,10 @@ app.use(bodyParser.urlencoded({ extended: true })); // для приёма ве�
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '62000aecebeadd288ab6f905',
+    _id: '62000b03ebeadd288ab6f907',
   };
   next();
 });
 
-app.use('/users', require('./routes/users'));
-app.use('/cards', require('./routes/cards'));
+app.use('/users', usersRoutes);
+app.use('/cards', cardsRoutes);
