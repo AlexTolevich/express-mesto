@@ -18,7 +18,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
-  console.log(`App listening on port работает ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
 });
 
 app.use(bodyParser.json()); // для собирания JSON-формата
