@@ -1,4 +1,7 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+
 const { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND } = require('../utils/errors');
 
 const createUser = (req, res) => {
@@ -6,13 +9,18 @@ const createUser = (req, res) => {
     name,
     about,
     avatar,
+    email,
+    password,
   } = req.body;
 
-  User.create({
-    name,
-    about,
-    avatar,
-  })
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash, // записываем хеш в базу
+    }))
     // вернём записанные в базу данные
     .then((user) => res.status(200).send(user))
     // данные не записались, вернём ошибку
@@ -22,6 +30,21 @@ const createUser = (req, res) => {
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' });
       }
+    });
+};
+
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      // ошибка аутентификации
+      res
+        .status(401)
+        .send({ message: err.message });
     });
 };
 
@@ -91,6 +114,7 @@ const setAvatar = (req, res) => {
 
 module.exports = {
   createUser,
+  login,
   getUser,
   getUsers,
   setUser,
