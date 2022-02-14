@@ -2,7 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 // const path = require('path');
 const bodyParser = require('body-parser');
-// Слушаем 3000 порт
+const helmet = require('helmet');
+const limiter = require('./utils/limiter');
+
 const { PORT = 3000 } = process.env;
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
@@ -39,6 +41,10 @@ app.post('/signin', login);
 app.use((req, res) => {
   res.status(NOT_FOUND).send({ message: 'Ресурс не существует' });
 });
+
+app.use(helmet()); // мидлвэр автоматически проставляет заголовки без-ти Content-Security-Policy
+
+app.use(limiter); // мидлвэр ограничения количества запросов с одного IP
 
 app.use(auth);
 
