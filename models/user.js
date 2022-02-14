@@ -1,28 +1,37 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: { // у пользователя есть имя — опишем требования к имени в схеме:
     type: String, // имя — это строка
-    required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
     minlength: 2, // минимальная длина имени — 2 символа
     maxlength: 30, // а максимальная — 30 символов
+    default: 'Жак-Ив Кусто',
   },
   avatar: {
     type: String, // ссылка на аватар — это строка
     minlength: 11, // минимальная длина https://a.a
-    required: true,
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: {
+      validator: (URL) => validator.isURL(URL),
+      message: 'Введенные данные не являются ссылкой',
+    },
   },
   about: {
     type: String, // Описание — это строка
-    required: true, // оно должно быть у каждого пользователя, так что описание — обязательное поле
     minlength: 2, // минимальная длина имени — 2 символа
     maxlength: 30, // а максимальная — 30 символов
+    default: 'Исследователь',
   },
   email: {
     type: String,
     required: true,
     unique: true,
+    validate: {
+      validator: (Email) => validator.isEmail(Email),
+      message: 'Ошибка формата адреса почты',
+    },
   },
   password: {
     type: String,

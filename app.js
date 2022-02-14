@@ -35,16 +35,16 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post('/signup', createUser);
 app.post('/signin', login);
-
-app.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Ресурс не существует' });
-});
+app.post('/signup', createUser);
 
 app.use(helmet()); // мидлвэр автоматически проставляет заголовки без-ти Content-Security-Policy
 
 app.use(limiter); // мидлвэр ограничения количества запросов с одного IP
+
+app.use((req, res) => {
+  res.status(NOT_FOUND).send({ message: 'Ресурс не существует' });
+});
 
 app.use(auth);
 

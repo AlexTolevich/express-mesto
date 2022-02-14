@@ -38,7 +38,11 @@ const login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      const token = jwt.sign(
+        { _id: user._id },
+        'some-secret-key',
+        { expiresIn: '7d' },
+      );
       // вернём токен
       res.send({ token });
     })
@@ -71,6 +75,18 @@ const getUsers = (req, res) => {
   User.find({})
     .then((user) => res.status(200).send(user))
     .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+};
+
+const getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при запросе пользователя.' });
+      } else {
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 const setUser = (req, res) => {
@@ -119,6 +135,7 @@ module.exports = {
   login,
   getUser,
   getUsers,
+  getCurrentUser,
   setUser,
   setAvatar,
 };
