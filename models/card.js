@@ -8,14 +8,14 @@ const cardSchema = new mongoose.Schema({
     maxlength: 30,
   },
   link: {
-    type: String, // ссылка на аватар — это строка
-    minlength: 11, // минимальная длина https://a.a
+    type: String,
+    minlength: 11,
     required: true,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: true, // оно должно быть у каждого пользователя, так что описание — обязательное поле
+    required: true,
   },
   likes: [{
     type: mongoose.Schema.Types.ObjectId,
