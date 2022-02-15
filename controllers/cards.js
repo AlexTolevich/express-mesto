@@ -13,7 +13,6 @@ const postCard = (req, res, next) => {
     link,
     owner: req.user._id,
   })
-    // вернём записанные в базу данные
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {

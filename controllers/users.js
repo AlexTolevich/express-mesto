@@ -22,9 +22,7 @@ const createUser = (req, res, next) => {
       email,
       password: hash, // записываем хеш в базу
     }))
-    // вернём записанные в базу данные
     .then((user) => res.status(200).send(user))
-    // данные не записались, вернём ошибку
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadRequest('Переданы некорректные данные при создании пользователя.'));

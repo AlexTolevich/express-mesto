@@ -5,14 +5,11 @@ const { errors } = require('celebrate');
 const helmet = require('helmet');
 const limiter = require('./utils/limiter');
 
-// const path = require('path');
 const { PORT = 3000 } = process.env;
 const errorHandler = require('./middlewares/error-handler');
 const routes = require('./routes');
 
 const app = express();
-
-// app.use(express.static(path.join(__dirname, 'public')));
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -31,6 +28,5 @@ app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
   console.log(`App listening on port ${PORT}`);
 });
