@@ -24,13 +24,20 @@ const postCard = (req, res) => {
     });
 };
 
-const delCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+const delCard = (req, res, next) => {
+  Card.findById(req.params.cardId)
+    .orFail(() => {
+      return res.status(NOT_FOUND).send({ message: `Карточка с указанным id=${req.params.cardId} не найдена.` });
+    })
     .then((card) => {
-      if (!card) {
-        return res.status(NOT_FOUND).send({ message: `Карточка с указанным id=${req.params.cardId} не найдена.` });
+      if (req.user._id === card.owner.toString()) {
+        Card.findByIdAndRemove(req.params.cardId)
+          .then(() => {
+            res.status(200).send(card);
+          });
+      } else {
+        return res.status(400).send({ message: 'Отсутствуют права на удаление карточки' });
       }
-      return res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -38,7 +45,8 @@ const delCard = (req, res) => {
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
-    });
+    })
+    .catch(next);
 };
 
 const getCards = (req, res) => {

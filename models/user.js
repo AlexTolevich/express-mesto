@@ -3,15 +3,15 @@ const bcrypt = require('bcryptjs');
 const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
-  name: { // у пользователя есть имя — опишем требования к имени в схеме:
-    type: String, // имя — это строка
-    minlength: 2, // минимальная длина имени — 2 символа
-    maxlength: 30, // а максимальная — 30 символов
+  name: {
+    type: String,
+    minlength: 2,
+    maxlength: 30,
     default: 'Жак-Ив Кусто',
   },
   avatar: {
-    type: String, // ссылка на аватар — это строка
-    minlength: 11, // минимальная длина https://a.a
+    type: String,
+    minlength: 11,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator: (URL) => validator.isURL(URL),
@@ -19,9 +19,9 @@ const userSchema = new mongoose.Schema({
     },
   },
   about: {
-    type: String, // Описание — это строка
-    minlength: 2, // минимальная длина имени — 2 символа
-    maxlength: 30, // а максимальная — 30 символов
+    type: String,
+    minlength: 2,
+    maxlength: 30,
     default: 'Исследователь',
   },
   email: {
@@ -37,11 +37,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 8,
+    select: false,
   },
 });
 
 userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
   return this.findOne({ email })
+    .select('+password')
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error('Неправильные почта или пароль'));
@@ -56,6 +58,12 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
           return user; // теперь user доступен
         });
     });
+};
+
+userSchema.methods.toJSON = function delPassword() {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
 };
 
 module.exports = mongoose.model('user', userSchema);

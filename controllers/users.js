@@ -27,7 +27,7 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя.' });
-      } else if (err.code === 11000) {
+      } else if (err.name === "MongoError" && err.code === 11000) {
         res.status(BAD_REQUEST).send({ message: 'Пользователь с указанным email уже зарегистрирован' });
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' });
