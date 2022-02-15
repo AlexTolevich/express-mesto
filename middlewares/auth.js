@@ -1,7 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-// middlewares/auth.js
-
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
@@ -23,7 +21,7 @@ module.exports = (req, res, next) => {
     // отправим ошибку, если не получилось
     return res
       .status(401)
-      .send({ message: 'Необходима авторизация' });
+      .send({ message: 'Ошибка авторизации' });
   }
 
   req.user = payload; // записываем пейлоуд в объект запроса

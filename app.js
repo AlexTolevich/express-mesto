@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // для приёма ве�
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '62000b03ebeadd288ab6f907',
+    _id: '620aa8e26ed919cc333b32b8',
   };
   next();
 });
@@ -42,9 +42,9 @@ app.use(helmet()); // мидлвэр автоматически проставл
 
 app.use(limiter); // мидлвэр ограничения количества запросов с одного IP
 
-app.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Ресурс не существует' });
-});
+// app.use((req, res) => {
+//   res.status(NOT_FOUND).send({ message: 'Ресурс не существует' });
+// });
 
 app.use(auth);
 

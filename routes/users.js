@@ -7,14 +7,14 @@ const {
   getCurrentUser,
 } = require('../controllers/users');
 
-router.get('/:id', getUser);
-
-router.get('/', getUsers);
+router.patch('/me/avatar', setAvatar);
 
 router.patch('/me', setUser);
 
 router.get('/me', getCurrentUser);
 
-router.patch('/me/avatar', setAvatar);
+router.get('/:id', getUser);
+
+router.get('/', getUsers);
 
 module.exports = router;

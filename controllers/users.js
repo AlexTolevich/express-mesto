@@ -4,7 +4,7 @@ const User = require('../models/user');
 
 const { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND } = require('../utils/errors');
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -27,13 +27,17 @@ const createUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+      } else if (err.code === 11000) {
+        res.status(BAD_REQUEST).send({ message: 'Пользователь с указанным email уже зарегистрирован' });
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' });
       }
-    });
+    })
+
+    .catch(next);
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -43,18 +47,26 @@ const login = (req, res) => {
         'some-secret-key',
         { expiresIn: '7d' },
       );
-      // вернём токен
+        // res
+        //   .cookie('jwt', token, {
+        //     // token - наш JWT токен, который мы отправляем
+        //     maxAge: 3600000,
+        //     httpOnly: true,
+        //     sameSite: true,
+        //   })
+        //   .send({ message: 'Успешный вход' });
+        // // вернём токен
       res.send({ token });
     })
     .catch((err) => {
-      // ошибка аутентификации
       res
         .status(401)
         .send({ message: err.message });
-    });
+    })
+    .catch(next);
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
@@ -68,16 +80,18 @@ const getUser = (req, res) => {
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
-    });
+    })
+    .catch(next);
 };
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.status(200).send(user))
-    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }))
+    .catch(next);
 };
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => res.status(200).send(user))
     .catch((err) => {
@@ -86,10 +100,11 @@ const getCurrentUser = (req, res) => {
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
-    });
+    })
+    .catch(next);
 };
 
-const setUser = (req, res) => {
+const setUser = (req, res, next) => {
   const {
     name,
     about,
@@ -107,10 +122,11 @@ const setUser = (req, res) => {
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
-    });
+    })
+    .catch(next);
 };
 
-const setAvatar = (req, res) => {
+const setAvatar = (req, res, next) => {
   const {
     avatar,
   } = req.body;
@@ -127,7 +143,8 @@ const setAvatar = (req, res) => {
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports = {
