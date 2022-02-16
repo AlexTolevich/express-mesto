@@ -1,7 +1,6 @@
 class BadRequest extends Error {
   constructor(message) {
-    message = message || 'Недействительный синтаксис запроса';
-    super(message);
+    super(message || 'Недействительный синтаксис запроса');
 
     this.statusCode = 400;
   }

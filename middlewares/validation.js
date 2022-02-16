@@ -9,6 +9,16 @@ const validationLogin = celebrate({
   }),
 });
 
+const validationUser = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    avatar: Joi.string().required().pattern(linkRegExp),
+    about: Joi.string().required().min(2).max(30),
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
+});
+
 const validationAvatar = celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required().pattern(linkRegExp),
@@ -24,28 +34,29 @@ const validationPatchUser = celebrate({
 
 const validationUserId = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().alphanum().length(24),
+    id: Joi.string().length(24).hex(),
   }),
 });
 
 const validationCard = celebrate({
-  params: Joi.object().keys({
+  body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string().required().pattern(linkRegExp),
   }),
 });
 
-const validationCardrId = celebrate({
+const validationCardId = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().length(24).hex(),
   }),
 });
 
 module.exports = {
   validationLogin,
+  validationUser,
   validationAvatar,
   validationPatchUser,
   validationUserId,
   validationCard,
-  validationCardrId,
+  validationCardId,
 };

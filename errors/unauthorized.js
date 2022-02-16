@@ -1,7 +1,6 @@
 class UnauthorizedError extends Error {
   constructor(message) {
-    message = message || 'Нет доступа к запрашиваемому ресурсу';
-    super(message);
+    super(message || 'Нет доступа к запрашиваемому ресурсу');
 
     this.statusCode = 401;
   }

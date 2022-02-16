@@ -1,7 +1,6 @@
 class ConflictError extends Error {
   constructor(message) {
-    message = message || 'Конфликт запроса с текущим состоянием сервера';
-    super(message);
+    super(message || 'Конфликт запроса с текущим состоянием сервера');
 
     this.statusCode = 409;
   }

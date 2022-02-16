@@ -84,13 +84,7 @@ const getUsers = (req, res, next) => {
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequest('Переданы некорректные данные при запросе пользователя.'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const setUser = (req, res, next) => {
@@ -128,6 +122,8 @@ const setAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadRequest('Переданы некорректные данные при обновлении аватара.'));
+      } else {
+        next(err);
       }
     });
 };

@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const BadRequest = require('../errors/badRequest');
 const NotFoundError = require('../errors/notFound');
+const ForbiddenError = require('../errors/forbidden');
 
 const postCard = (req, res, next) => {
   const {
@@ -33,9 +34,10 @@ const delCard = (req, res, next) => {
         Card.findByIdAndRemove(req.params.cardId)
           .then(() => {
             res.status(200).send(card);
-          });
+          })
+          .catch(next);
       } else {
-        throw new BadRequest('Отсутствуют права на удаление карточки');
+        throw new ForbiddenError('Отсутствуют права на удаление карточки');
       }
     })
     .catch((err) => {
