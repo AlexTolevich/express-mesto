@@ -7,6 +7,7 @@ const limiter = require('./utils/limiter');
 
 const { PORT = 3000 } = process.env;
 const errorHandler = require('./middlewares/error-handler');
+const { errorLogger, requestLogger } = require('./middlewares/logger');
 const routes = require('./routes');
 
 const app = express();
@@ -22,9 +23,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // для приёма ве�
 app.use(helmet()); // мидлвэр автоматически проставляет заголовки без-ти Content-Security-Policy
 app.use(limiter); // мидлвэр ограничения количества запросов с одного IP
 
+app.use(requestLogger);
 app.use(routes);
 
-app.use(errors());
+app.use(errorLogger);
+app.use(errors()); // обработчик ошибок celebrate
 app.use(errorHandler);
 
 app.listen(PORT);
