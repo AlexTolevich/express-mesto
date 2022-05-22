@@ -32,7 +32,7 @@
 ### Установка
 
 - клонировать проект с удаленного репозитория, для чего выполнить
-  команду `git clone git@github.com:AlexTolevich/react-mesto-auth.git`
+  команду `git clone git@github.com:AlexTolevich/express-mesto.git`
 - установить модули прописанные в зависимостях package.json, для чего выполнить команду `npm install`
 
 ### Работа с проектом
